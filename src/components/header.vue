@@ -35,25 +35,25 @@ function select(type: string, unit: string) {
     <!-- Dropdown menu -->
     <div v-if="open" class="absolute right-4 mt-2 top-15 w-56 bg-neutral-700 rounded-lg shadow-lg p-3 space-y-4 z-10">
       <!-- Switch to Imperial -->
-      <button class="w-full text-left text-sm font-semibold py-1 px-2 hover:bg-neutral-600 rounded"
+      <button class="w-full text-left text-sm py-1 px-2 hover:bg-neutral-600 rounded"
         @click="switchToImperial">
         Switch to Imperial
       </button>
   
       <!-- Temperature -->
       <section>
-        <h3 class="text-xs font-semibold text-gray-500 uppercase mb-1">Temperature</h3>
+        <h3 class="text-xs text-gray-500 mb-1">Temperature</h3>
         <ul class="space-y-1">
           <li>
             <button @click="select('temperature', 'c')"
               class="w-full text-left text-sm py-1 px-2 rounded hover:bg-neutral-600">
-              Celsius
+              Celsius (°C)
             </button>
           </li>
           <li>
             <button @click="select('temperature', 'f')"
               class="w-full text-left text-sm py-1 px-2 rounded hover:bg-neutral-600">
-              Fahrenheit
+              Fahrenheit (°F)
             </button>
           </li>
         </ul>
@@ -61,7 +61,7 @@ function select(type: string, unit: string) {
   
       <!-- Wind Speed -->
       <section>
-        <h3 class="text-xs font-semibold text-gray-500 uppercase mb-1">Wind Speed</h3>
+        <h3 class="text-xs text-gray-500 mb-1">Wind Speed</h3>
         <ul class="space-y-1">
           <li>
             <button @click="select('wind', 'kmh')" class="w-full text-left text-sm py-1 px-2 rounded hover:bg-neutral-600">
@@ -78,16 +78,16 @@ function select(type: string, unit: string) {
   
       <!-- Precipitation -->
       <section>
-        <h3 class="text-xs font-semibold text-gray-500 uppercase mb-1">Precipitation</h3>
+        <h3 class="text-xs text-gray-500 mb-1">Precipitation</h3>
         <ul class="space-y-1">
           <li>
             <button @click="select('precip', 'mm')" class="w-full text-left text-sm py-1 px-2 rounded hover:bg-neutral-600">
-              mm
+              Millimeters (mm)
             </button>
           </li>
           <li>
             <button @click="select('precip', 'in')" class="w-full text-left text-sm py-1 px-2 rounded hover:bg-neutral-600">
-              Inches
+              Inches (in)
             </button>
           </li>
         </ul>

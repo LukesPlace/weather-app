@@ -23,6 +23,22 @@
   --text-body: 18px;
 }
 
+@font-face {
+  font-family: "DMSans";
+  src: url("assets/fonts/DM_Sans/static/DMSans-Medium.ttf") format("truetype");
+  font-weight: 500;
+}
+
+@font-face {
+  font-family: "DMSans";
+  src: url("assets/fonts/DM_Sans/static/DMSans-Bold.ttf") format("truetype");
+  font-weight: 700;
+}
+
+@theme {
+  --font-dm-sans: "DMSans", sans-serif;
+}
+
 /* Global base styles */
 @layer base {
   body {
