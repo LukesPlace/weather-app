@@ -28,7 +28,7 @@ function select(type: string, unit: string) {
     <div class="relative">
       <button @click="toggle" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-neutral-700 hover:bg-neutral-600 transition">
         <img src="../../assets/images/icon-units.svg"></img>
-        <span class="text-sm font-medium">Units</span>
+        <span class="text-sm font-medium font">Units</span>
         <img src="../../assets/images/icon-dropdown.svg"></img>
       </button>
     </div>

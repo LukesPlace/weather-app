@@ -1,16 +1,26 @@
 <script setup lang="ts">
 import ConditionTile from "./components/condition-tile.vue";
+import ForecaseTile from "./components/forecase-tile.vue";
 import Header from "./components/header.vue";
+import HourlyForecast from "./components/hourly-forecast.vue";
 </script>
 
 <template>
   <Header></Header>
   <div class="mx-4 space-y-6">
 
-    <h1 class="text-7xl text-center">How's the sky looking today?</h1>
-    <div class="space-y-3">
-      <input class="w-full py-2 bg-neutral-800 rounded-xl" placeholder="Search for a place..."></input>
-      <button class="w-full py-2 bg-blue-500 rounded-xl">Search</button>
+    <h1 class="text-7xl text-center py-8 font-bricolage-grotesque">How's the sky looking today?</h1>
+    <div class="space-y-1">
+      
+    <div class="w-full flex items-center bg-neutral-800 rounded-xl px-3">
+      <img src="/assets/images/icon-search.svg" class="w-5 h-5 mr-2" />
+      <input 
+        class="w-full py-4 bg-neutral-800 focus:outline-none" 
+        placeholder="Search for a place..."
+      />
+    </div>
+
+    <button class="w-full py-4 bg-blue-500 rounded-xl mt-2">Search</button>
     </div>
     <!-- Main Location Card -->
     <div class="h-full p-4 flex flex-col text-center justify-center w-full items-center bg-[url('assets/images/bg-today-small.svg')] bg-cover bg-center rounded-2xl">
@@ -31,6 +41,16 @@ import Header from "./components/header.vue";
       <!-- Precipitation -->
       <ConditionTile title="Precipitation" value="0 mm"></ConditionTile>
     </div>
+    <div class="w-full grid grid-cols-3 gap-5"> 
+      <ForecaseTile day="Tue" condition="rain" :daily-highest="20" :daily-lowest="14"></ForecaseTile>
+      <ForecaseTile day="Tue" condition="rain" :daily-highest="20" :daily-lowest="14"></ForecaseTile>
+      <ForecaseTile day="Tue" condition="rain" :daily-highest="20" :daily-lowest="14"></ForecaseTile>
+      <ForecaseTile day="Tue" condition="rain" :daily-highest="20" :daily-lowest="14"></ForecaseTile>
+      <ForecaseTile day="Tue" condition="rain" :daily-highest="20" :daily-lowest="14"></ForecaseTile>
+      <ForecaseTile day="Tue" condition="rain" :daily-highest="20" :daily-lowest="14"></ForecaseTile>
+      <ForecaseTile day="Tue" condition="rain" :daily-highest="20" :daily-lowest="14"></ForecaseTile>
+    </div>
+    <HourlyForecast day="Tuesday"></HourlyForecast>
   </div>
 </template>
 

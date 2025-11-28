@@ -35,8 +35,22 @@
   font-weight: 700;
 }
 
+@font-face {
+  font-family: "BricolageGrotesque";
+  src: url("assets/fonts/Bricolage_Grotesque/static/BricolageGrotesque-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "BricolageGrotesque";
+  src: url("assets/fonts/Bricolage_Grotesque/BricolageGrotesque-VariableFont_opsz,wdth,wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-display: swap;
+}
+
 @theme {
   --font-dm-sans: "DMSans", sans-serif;
+  --font-bricolage-grotesque: "BricolageGrotesque", sans-serif;
 }
 
 /* Global base styles */
