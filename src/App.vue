@@ -1,8 +1,21 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import ConditionTile from "./components/condition-tile.vue";
-import ForecaseTile from "./components/forecase-tile.vue";
+import ForecastTile from "./components/forecast-tile.vue";
 import Header from "./components/header.vue";
 import HourlyForecast from "./components/hourly-forecast.vue";
+
+
+import { useWeather } from "@/composables/useWeather";
+
+const place = ref("");
+const { loading, error, forecast, locationName, countryName, getWeather } = useWeather();
+
+async function search() {
+  if (!place.value) return;
+  await getWeather(place.value);
+  console.log('forecast', forecast.value);
+}
 </script>
 
 <template>
@@ -17,38 +30,33 @@ import HourlyForecast from "./components/hourly-forecast.vue";
       <input 
         class="w-full py-4 bg-neutral-800 focus:outline-none" 
         placeholder="Search for a place..."
+        v-model="place"
       />
     </div>
 
-    <button class="w-full py-4 bg-blue-500 rounded-xl mt-2">Search</button>
+    <button @click="search" class="w-full py-4 bg-blue-500 rounded-xl mt-2">Search</button>
     </div>
     <!-- Main Location Card -->
     <div class="h-full p-4 flex flex-col text-center justify-center w-full items-center bg-[url('assets/images/bg-today-small.svg')] bg-cover bg-center rounded-2xl">
-      <h2 class="w-4/5 text-3xl text-neutral-100">Berlin, Germany</h2>
+      <h2 class="w-4/5 text-3xl text-neutral-100">{{ locationName ? `${locationName}, ${countryName}` : 'Berlin, Germany'}}</h2>
       <h3 class="text-xl text-neutral-300">Tuesday, Aug 5, 2025</h3>
       <div class="flex items-center">
         <img src="/assets/images/icon-sunny.webp" class="w-35"></img>
-        <h1 class="text-9xl text-neutral-100">20°</h1>
+        <h1 class="text-9xl text-neutral-100">{{ forecast ? forecast.current.temperature : 18}}°</h1>
       </div>
     </div>
     <div class="w-full grid grid-cols-2 gap-5">
       <!-- Feels like -->
-      <ConditionTile title="Feels Like" value="18°"></ConditionTile>
+      <ConditionTile title="Feels Like" :value="forecast ? `${forecast.current.feelsLike}°` : '18°'"></ConditionTile>
       <!-- Humidity -->
-      <ConditionTile title="Humidity" value="46%"></ConditionTile>
+      <ConditionTile title="Humidity" :value="forecast ? `${forecast.current.humidity}%`: '46%'"></ConditionTile>
       <!-- Wind -->
-      <ConditionTile title="Wind" value="14 km/h"></ConditionTile>
+      <ConditionTile title="Wind" :value="forecast ? `${forecast.current.windSpeed} km/h` : '14 km/h'"></ConditionTile>
       <!-- Precipitation -->
-      <ConditionTile title="Precipitation" value="0 mm"></ConditionTile>
+      <ConditionTile title="Precipitation" :value="forecast ? `${forecast.current.precipitation} mm` : '0 mm'"></ConditionTile>
     </div>
-    <div class="w-full grid grid-cols-3 gap-5"> 
-      <ForecaseTile day="Tue" condition="rain" :daily-highest="20" :daily-lowest="14"></ForecaseTile>
-      <ForecaseTile day="Tue" condition="rain" :daily-highest="20" :daily-lowest="14"></ForecaseTile>
-      <ForecaseTile day="Tue" condition="rain" :daily-highest="20" :daily-lowest="14"></ForecaseTile>
-      <ForecaseTile day="Tue" condition="rain" :daily-highest="20" :daily-lowest="14"></ForecaseTile>
-      <ForecaseTile day="Tue" condition="rain" :daily-highest="20" :daily-lowest="14"></ForecaseTile>
-      <ForecaseTile day="Tue" condition="rain" :daily-highest="20" :daily-lowest="14"></ForecaseTile>
-      <ForecaseTile day="Tue" condition="rain" :daily-highest="20" :daily-lowest="14"></ForecaseTile>
+    <div v-if="forecast" class="w-full grid grid-cols-3 gap-5"> 
+      <ForecastTile v-for="dailyForecast in forecast.daily" :key="dailyForecast.date" :day="dailyForecast.day" :condition="dailyForecast.condition" :daily-highest="dailyForecast.maxTemp" :daily-lowest="dailyForecast.minTemp"></ForecastTile>
     </div>
     <HourlyForecast day="Tuesday"></HourlyForecast>
   </div>
