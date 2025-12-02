@@ -1,13 +1,13 @@
 <script setup lang="ts">
+import type { HourlyCondition } from "@/composables/useWeather";
 import WeatherIcon from "./weather-icon.vue";
 
 interface ForecastTileProps {
   day: string;
+  hourlyForecast: Array<HourlyCondition>;
 }
 
 const props = defineProps<ForecastTileProps>();
-
-const timeValues = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 </script>
 <template>
   <div
@@ -26,15 +26,15 @@ const timeValues = [3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
     <div class="w-full space-y-4">
       <div
         class="w-full flex flex-row items-center justify-between bg-neutral-700 border-neutral-600 border rounded-xl pr-4"
-        v-for="v in timeValues"
+        v-for="v in hourlyForecast"
       >
         <div class="flex items-center">
           <div class="w-16 flex">
             <WeatherIcon condition="sunny"></WeatherIcon>
           </div>
-          <p class="text-2xl">{{ v }} PM</p>
+          <p class="text-2xl">{{ v.formattedTime }}</p>
         </div>
-        <p class="text-xl text-neutral-300">20°</p>
+        <p class="text-xl text-neutral-300">{{v.temperature}}°</p>
       </div>
     </div>
   </div>

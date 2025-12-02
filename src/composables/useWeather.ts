@@ -1,6 +1,36 @@
-import getWeekday from "@/utils/getWeekday";
+import type { ConditionIcon } from "@/components/weather-icon.vue";
+import { getWeekday } from "@/utils/date";
 import { ref } from "vue";
 
+export interface Condition {
+  temperature: number,
+  feelsLike: number,
+  humidity: number,
+  windspeed: number,
+  precipitation: number,
+  condition: ConditionIcon
+}
+
+export interface DailyCondition {
+  date: Date,
+  day: string,
+  maxTemp: number,
+  minTemp: number,
+  maxWind: number,
+  precipitation: number,
+  condition: ConditionIcon,
+}
+
+export interface HourlyCondition extends Condition {
+  time: string,
+  formattedTime: string
+}
+
+export interface Forecast {
+  current: Condition,
+  daily: Array<DailyCondition>,
+  hourly: Array<HourlyCondition>
+}
 export function useWeather() {
   const loading = ref(false);
   const error = ref<string | null>(null);

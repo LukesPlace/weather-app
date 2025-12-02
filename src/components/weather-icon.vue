@@ -1,6 +1,8 @@
 <script setup lang="ts">
+
+export type ConditionIcon = "drizzle" | "fog" | "overcast" | "partly-cloudy" | "rain" | "snow" | "storm" | "sunny";
 interface ForecastTileProps {
-  condition: "drizzle" | "fog" | "overcast" | "partly-cloudy" | "rain" | "snow" | "storm" | "sunny";
+  condition: ConditionIcon;
 }
 
 const props = defineProps<ForecastTileProps>();
