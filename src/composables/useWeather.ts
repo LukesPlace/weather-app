@@ -34,7 +34,7 @@ export interface Forecast {
 export function useWeather() {
   const loading = ref(false);
   const error = ref<string | null>(null);
-  const forecast = ref<any>(null);
+  const forecast = ref<Forecast | null>(null);
   const locationName = ref("");
   const countryName = ref("");
 
@@ -120,71 +120,7 @@ export function useWeather() {
       //-----------------------------
       // Process current weather
       //-----------------------------
-      const h = weatherData.hourly;
-
-      const current = {
-        temperature: h.temperature_2m[0],
-        feelsLike: h.apparent_temperature[0],
-        humidity: h.relative_humidity_2m[0],
-        windSpeed: h.wind_speed_10m[0],
-        precipitation: h.precipitation[0],
-        condition: getCondition({
-          temperature: h.temperature_2m[0],
-          precipitation: h.precipitation[0],
-          humidity: h.relative_humidity_2m[0],
-          cloudCover: 0 //no cloud cover
-        })
-      };
-
-      //-----------------------------
-      // Hourly forecast
-      //-----------------------------
-      const hourly = h.time.map((t: string, i: number) => ({
-        time: t,
-        temperature: h.temperature_2m[i],
-        feelsLike: h.apparent_temperature[i],
-        humidity: h.relative_humidity_2m[i],
-        precipitation: h.precipitation[i],
-        windSpeed: h.wind_speed_10m[i],
-        condition: getCondition({
-          temperature: h.temperature_2m[i],
-          precipitation: h.precipitation[i],
-          humidity: h.relative_humidity_2m[i],
-          cloudCover: h.cloud_cover[i]
-        })
-      }));
-
-      //-----------------------------
-      // Daily summary forecast
-      //-----------------------------
-      const d = weatherData.daily;
-      const daily = d.time.map((date: string, i: number) => ({
-        date,
-        day: getWeekday(date),
-        maxTemp: d.temperature_2m_max[i],
-        minTemp: d.temperature_2m_min[i],
-        precipitation: d.precipitation_sum[i],
-        maxWind: d.wind_speed_10m_max[i],
-        condition: getCondition({
-          temperature: d.temperature_2m_max[i],
-          precipitation: d.precipitation_sum[i],
-          humidity: 50, //No humidity in daily = assume average
-          cloudCover: 0 // no cloud cover
-        })
-      }));
-
-      // Final structured forecast
-      forecast.value = {
-        location: {
-          name: geo.cityName,
-          country: geo.country,
-          lat: geo.lat,
-          lon: geo.lon
-        },
-        current,
-        hourly,
-        daily
-      };
+      parseForecast(weatherData, geo);
     } catch (err: any) {
       error.value = err.message;
     } finally {
@@ -198,6 +134,75 @@ export function useWeather() {
     forecast,
     locationName,
     countryName,
-    getWeather
+    getWeather,
+    parseForecast
   };
+
+  function parseForecast(weatherData: any, geo: { lat: any; lon: any; cityName: any; country: any; }) {
+    const h = weatherData.hourly;
+
+    const current = {
+      temperature: h.temperature_2m[0],
+      feelsLike: h.apparent_temperature[0],
+      humidity: h.relative_humidity_2m[0],
+      windSpeed: h.wind_speed_10m[0],
+      precipitation: h.precipitation[0],
+      condition: getCondition({
+        temperature: h.temperature_2m[0],
+        precipitation: h.precipitation[0],
+        humidity: h.relative_humidity_2m[0],
+        cloudCover: 0 //no cloud cover
+      })
+    };
+
+    //-----------------------------
+    // Hourly forecast
+    //-----------------------------
+    const hourly = h.time.map((t: string, i: number) => ({
+      time: t,
+      temperature: h.temperature_2m[i],
+      feelsLike: h.apparent_temperature[i],
+      humidity: h.relative_humidity_2m[i],
+      precipitation: h.precipitation[i],
+      windSpeed: h.wind_speed_10m[i],
+      condition: getCondition({
+        temperature: h.temperature_2m[i],
+        precipitation: h.precipitation[i],
+        humidity: h.relative_humidity_2m[i],
+        cloudCover: h.cloud_cover[i]
+      })
+    }));
+
+    //-----------------------------
+    // Daily summary forecast
+    //-----------------------------
+    const d = weatherData.daily;
+    const daily = d.time.map((date: string, i: number) => ({
+      date,
+      day: getWeekday(date),
+      maxTemp: d.temperature_2m_max[i],
+      minTemp: d.temperature_2m_min[i],
+      precipitation: d.precipitation_sum[i],
+      maxWind: d.wind_speed_10m_max[i],
+      condition: getCondition({
+        temperature: d.temperature_2m_max[i],
+        precipitation: d.precipitation_sum[i],
+        humidity: 50, //No humidity in daily = assume average
+        cloudCover: 0 // no cloud cover
+      })
+    }));
+
+    // Final structured forecast
+    forecast.value = {
+      location: {
+        name: geo.cityName,
+        country: geo.country,
+        lat: geo.lat,
+        lon: geo.lon
+      },
+      current,
+      hourly,
+      daily
+    };
+  }
 }
