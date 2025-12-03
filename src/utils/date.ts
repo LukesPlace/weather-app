@@ -31,15 +31,15 @@ export function filterTodayFromCurrentHour(hourly: Array<HourlyCondition>) {
   tomorrow.setDate(now.getDate() + 1);
   const tomorrowsDate = tomorrow.toISOString().split("T")[0];
 
-  return hourly
+  const upcoming = hourly
     .filter((entry) => {
       const [dateStr, timeStr] = entry.time.split("T");
       if (!dateStr || !timeStr) return false;
 
-      const [hourStr] = timeStr.split(":");
-      const hour = Number(hourStr);
+      const hour = Number(timeStr.split(":")[0]);
 
       if (dateStr === currentDate && hour >= currentHour) return true;
+
       if (dateStr === tomorrowsDate && hour <= currentHour) return true;
 
       return false;
@@ -54,6 +54,9 @@ export function filterTodayFromCurrentHour(hourly: Array<HourlyCondition>) {
         ...entry,
         formattedTime,
       };
-    });
+    })
+    .slice(0, 8);
+
+  return upcoming;
 }
 

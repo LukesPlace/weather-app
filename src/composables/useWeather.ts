@@ -6,7 +6,7 @@ export interface Condition {
   temperature: number,
   feelsLike: number,
   humidity: number,
-  windspeed: number,
+  windSpeed: number,
   precipitation: number,
   condition: ConditionIcon
 }
@@ -73,7 +73,7 @@ export function useWeather() {
     precipitation: number;
     humidity: number;
     cloudCover: number; // 0–100
-  }) {
+  }): ConditionIcon {
     // --- Snow ---
     if (temperature <= 2 && precipitation > 0.2) return "snow";
 
@@ -120,7 +120,7 @@ export function useWeather() {
       //-----------------------------
       // Process current weather
       //-----------------------------
-      parseForecast(weatherData, geo);
+      forecast.value = parseForecast(weatherData, geo);
     } catch (err: any) {
       error.value = err.message;
     } finally {
@@ -193,7 +193,7 @@ export function useWeather() {
     }));
 
     // Final structured forecast
-    forecast.value = {
+    return {
       location: {
         name: geo.cityName,
         country: geo.country,

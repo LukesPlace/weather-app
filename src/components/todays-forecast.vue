@@ -23,7 +23,7 @@ const feelsLike = computed(() => {
 });
 const windSpeed = computed(() => {
   if (props.unitState.isWindSpeedMetric) {
-    return props.todaysForecast.current.windspeed;
+    return props.todaysForecast.current.windSpeed;
   }
   return kmhToMph(props.todaysForecast.current.windSpeed);
 });
@@ -36,30 +36,35 @@ const precipitation = computed(() => {
 </script>
 
 <template>
-  <LocationCard
-    :location-name="locationName"
-    :country-name="countryName"
-    :todays-date="todaysDate"
-    :forecast="todaysForecast"
-    :unit-state="unitState"
-  ></LocationCard>
-  <div class="w-full grid grid-cols-2 gap-5">
-    <!-- Feels like -->
-    <ConditionTile title="Feels Like" :value="`${feelsLike}°`"></ConditionTile>
-    <!-- Humidity -->
-    <ConditionTile
-      title="Humidity"
-      :value="`${todaysForecast.current.humidity}%`"
-    ></ConditionTile>
-    <!-- Wind -->
-    <ConditionTile
-      title="Wind"
-      :value="`${windSpeed} ${unitState.isWindSpeedMetric ? 'km/h' : 'mph'}`"
-    ></ConditionTile>
-    <!-- Precipitation -->
-    <ConditionTile
-      title="Precipitation"
-      :value="`${precipitation} ${unitState.isPrecipitationMetric ? 'mm' : 'in'}`"
-    ></ConditionTile>
+  <div class="md:flex md:flex-col md:gap-6">
+    <LocationCard
+      :location-name="locationName"
+      :country-name="countryName"
+      :todays-date="todaysDate"
+      :forecast="todaysForecast"
+      :unit-state="unitState"
+    ></LocationCard>
+    <div class="w-full grid grid-cols-2 gap-5 md:flex md:justify-between">
+      <!-- Feels like -->
+      <ConditionTile
+        title="Feels Like"
+        :value="`${feelsLike}°`"
+      ></ConditionTile>
+      <!-- Humidity -->
+      <ConditionTile
+        title="Humidity"
+        :value="`${todaysForecast.current.humidity}%`"
+      ></ConditionTile>
+      <!-- Wind -->
+      <ConditionTile
+        title="Wind"
+        :value="`${windSpeed} ${unitState.isWindSpeedMetric ? 'km/h' : 'mph'}`"
+      ></ConditionTile>
+      <!-- Precipitation -->
+      <ConditionTile
+        title="Precipitation"
+        :value="`${precipitation} ${unitState.isPrecipitationMetric ? 'mm' : 'in'}`"
+      ></ConditionTile>
+    </div>
   </div>
 </template>

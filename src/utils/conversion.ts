@@ -3,13 +3,19 @@ export function cToF(celsius: number): number {
 }
 
 export function kmhToMph(kmh: number): number {
-  return round(kmh * 0.621371);
+  return Math.max(round(kmh * 0.621371));
 }
 
 export function mmToInches(mm: number): number {
-  return round(mm / 25.4);
+  return Math.max(round(mm / 25.4, 2), 0);
 }
 
-export function round(value: number, dp: number = 1): number {
-  return Number(value.toFixed(dp));
+export function round(value: number, decimals = 1): number {
+  if (!Number.isFinite(value)) return 0;
+
+  const factor = Math.pow(10, decimals);
+  const result = Math.round(value * factor) / factor;
+
+  // Prevent returning -0
+  return result === 0 ? 0 : result;
 }
