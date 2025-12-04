@@ -51,6 +51,7 @@
 @theme {
   --font-dm-sans: "DMSans", sans-serif;
   --font-bricolage-grotesque: "BricolageGrotesque", sans-serif;
+  --breakpoint-md: 950px;
 }
 
 /* Global base styles */

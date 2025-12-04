@@ -10,7 +10,7 @@ export function mmToInches(mm: number): number {
   return Math.max(round(mm / 25.4, 2), 0);
 }
 
-export function round(value: number, decimals = 1): number {
+export function round(value: number, decimals = 0): number {
   if (!Number.isFinite(value)) return 0;
 
   const factor = Math.pow(10, decimals);

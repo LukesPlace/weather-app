@@ -1,4 +1,5 @@
 import type { ConditionIcon } from "@/components/weather-icon.vue";
+import { round } from "@/utils/conversion";
 import { getWeekday } from "@/utils/date";
 import { ref } from "vue";
 
@@ -29,7 +30,15 @@ export interface HourlyCondition extends Condition {
 export interface Forecast {
   current: Condition,
   daily: Array<DailyCondition>,
-  hourly: Array<HourlyCondition>
+  hourly: Array<HourlyCondition>,
+  location: LocationData
+}
+
+interface LocationData {
+  country: string;
+  lat: number;
+  lon: number;
+  name: string;
 }
 export function useWeather() {
   const loading = ref(false);
@@ -180,12 +189,12 @@ export function useWeather() {
     const daily = d.time.map((date: string, i: number) => ({
       date,
       day: getWeekday(date),
-      maxTemp: d.temperature_2m_max[i],
-      minTemp: d.temperature_2m_min[i],
+      maxTemp: round(d.temperature_2m_max[i]),
+      minTemp: round(d.temperature_2m_min[i]),
       precipitation: d.precipitation_sum[i],
       maxWind: d.wind_speed_10m_max[i],
       condition: getCondition({
-        temperature: d.temperature_2m_max[i],
+        temperature: round(d.temperature_2m_max[i]),
         precipitation: d.precipitation_sum[i],
         humidity: 50, //No humidity in daily = assume average
         cloudCover: 0 // no cloud cover

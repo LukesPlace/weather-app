@@ -1,13 +1,23 @@
 <script setup lang="ts">
 import type { HourlyCondition } from "@/composables/useWeather";
 import WeatherIcon from "./weather-icon.vue";
+import type { UnitState } from "./unit-dropdown.vue";
+import { cToF } from "@/utils/conversion";
 
 interface ForecastTileProps {
   day: string;
   hourlyForecast: Array<HourlyCondition>;
+  unitState: UnitState;
 }
 
 const props = defineProps<ForecastTileProps>();
+
+function convert(temp: number){
+  if(props.unitState.isTemperatureMetric) {
+    return temp;
+  }
+  return cToF(temp);
+}
 </script>
 <template>
   <div
@@ -22,20 +32,20 @@ const props = defineProps<ForecastTileProps>();
         </button>
       </div>
     </div>
-
-    <div class="w-full space-y-4">
+    <div class="md:h-full w-full grid grid-rows-8 gap-4 overflow-hidden">
       <div
-        class="w-full flex flex-row items-center justify-between bg-neutral-700 border-neutral-600 border rounded-xl pr-4"
+        class="flex items-center justify-between bg-neutral-700 border border-neutral-600 rounded-xl pr-4"
         v-for="v in hourlyForecast"
       >
         <div class="flex items-center">
           <div class="w-16 flex">
-            <WeatherIcon condition="sunny"></WeatherIcon>
+            <WeatherIcon condition="sunny" />
           </div>
           <p class="text-2xl">{{ v.formattedTime }}</p>
         </div>
-        <p class="text-xl text-neutral-300">{{v.temperature}}°</p>
+        <p class="text-xl text-neutral-300">{{ convert(v.temperature) }}°</p>
       </div>
     </div>
+
   </div>
 </template>

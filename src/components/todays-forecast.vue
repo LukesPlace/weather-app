@@ -36,15 +36,18 @@ const precipitation = computed(() => {
 </script>
 
 <template>
-  <div class="md:flex md:flex-col md:gap-6">
+  <div class="space-y-6 md:space-y-0 md:flex md:flex-col md:gap-6 md:h-full">
     <LocationCard
+      class="flex-1"
       :location-name="locationName"
       :country-name="countryName"
       :todays-date="todaysDate"
       :forecast="todaysForecast"
       :unit-state="unitState"
-    ></LocationCard>
-    <div class="w-full grid grid-cols-2 gap-5 md:flex md:justify-between">
+    />
+    <div
+      class="w-full grid grid-cols-2 gap-5 md:grid-cols-4 md:text-wrap md:wrap-break-word"
+    >
       <!-- Feels like -->
       <ConditionTile
         title="Feels Like"
