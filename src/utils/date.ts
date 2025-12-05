@@ -16,11 +16,6 @@ export function getFormattedDate() {
   });
 }
 
-export function getCurrentDay() {
-  const date = new Date();
-  return date.toLocaleDateString("en-GB", {weekday: "long"});
-}
-
 export function getNext7Days() {
   const result: Array<{ day: string; date: string }> = [];
   const today = new Date();

@@ -11,12 +11,13 @@ import {
 } from "@/composables/useWeather";
 import {
   filterTodayFromCurrentHour,
-  getCurrentDay,
   getFormattedDate,
   getNext7Days,
 } from "./utils/date";
 import UnitDropdown, { type UnitState } from "./components/unit-dropdown.vue";
 import TodaysForecast from "./components/todays-forecast.vue";
+import CitySelect from "./components/city-select.vue";
+import { popularCities } from "./data/popular-cities";
 
 const unitState: Ref<UnitState> = ref({
   isPrecipitationMetric: true,
@@ -70,7 +71,6 @@ const hourlyForecast: ComputedRef<Array<HourlyCondition>> = computed(() => {
 async function search() {
   if (!place.value) return;
   await getWeather(place.value);
-  console.log("forecast", activeForecast.value);
 }
 </script>
 
@@ -84,19 +84,10 @@ async function search() {
         How's the sky looking today?
       </h1>
       <div class="space-y-1 md:flex md:justify-center md:gap-6 md:space-y-0">
-        <div
-          class="w-full md:w-1/3 flex items-center bg-neutral-800 rounded-xl px-3"
-        >
-          <img src="/assets/images/icon-search.svg" class="w-5 h-5 mr-2" />
-          <input
-            class="w-full py-4 bg-neutral-800 focus:outline-none"
-            placeholder="Search for a place..."
-            v-model="place"
-          />
-        </div>
+        <CitySelect v-model="place" :cities="popularCities"></CitySelect>
         <button
           @click="search"
-          class="w-full py-4 bg-blue-500 rounded-xl mt-2 md:mt-0 md:w-1/12"
+          class="w-full py-4 bg-blue-500 rounded-xl mt-2 md:mt-0 md:w-1/12 cursor-pointer"
         >
           Search
         </button>
