@@ -13,6 +13,7 @@ import {
   filterTodayFromCurrentHour,
   getCurrentDay,
   getFormattedDate,
+  getNext7Days,
 } from "./utils/date";
 import UnitDropdown, { type UnitState } from "./components/unit-dropdown.vue";
 import TodaysForecast from "./components/todays-forecast.vue";
@@ -25,7 +26,8 @@ const unitState: Ref<UnitState> = ref({
 
 const place = ref("");
 const todaysDate = getFormattedDate();
-const todaysDay = getCurrentDay();
+const weekOptions = ref(getNext7Days());
+const selectedWeekOption = ref(weekOptions.value[0]!);
 const {
   loading,
   error,
@@ -59,7 +61,10 @@ const activeCountryName = computed(() => {
 
 const hourlyForecast: ComputedRef<Array<HourlyCondition>> = computed(() => {
   if (!activeForecast.value) return [];
-  return filterTodayFromCurrentHour(activeForecast.value.hourly);
+  return filterTodayFromCurrentHour(
+    activeForecast.value.hourly,
+    new Date(selectedWeekOption.value.date)
+  );
 });
 
 async function search() {
@@ -135,9 +140,10 @@ async function search() {
         </div>
         <HourlyForecast
           class="order-2 md:row-span-2 md:h-[65vh]"
-          :day="todaysDay"
+          :weekOptions="weekOptions"
           :hourlyForecast="hourlyForecast"
           :unit-state="unitState"
+          v-model="selectedWeekOption"
         ></HourlyForecast>
       </div>
     </div>

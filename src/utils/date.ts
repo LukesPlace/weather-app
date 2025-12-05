@@ -21,8 +21,30 @@ export function getCurrentDay() {
   return date.toLocaleDateString("en-GB", {weekday: "long"});
 }
 
-export function filterTodayFromCurrentHour(hourly: Array<HourlyCondition>) {
-  const now = new Date();
+export function getNext7Days() {
+  const result: Array<{ day: string; date: string }> = [];
+  const today = new Date();
+
+  try {
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(today);
+      d.setDate(today.getDate() + i);
+      
+      result.push({
+        day: d.toLocaleDateString("en-US", { weekday: "long" }),
+        date: d.toISOString().split("T")[0]!,
+      });
+    }
+  }
+  catch {
+    return [];
+  }
+
+  return result;
+}
+
+export function filterTodayFromCurrentHour(hourly: Array<HourlyCondition>, selectedDate: Date) {
+  const now = new Date(selectedDate);
 
   const currentDate = now.toISOString().split("T")[0];
   const currentHour = now.getHours();
