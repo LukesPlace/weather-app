@@ -94,17 +94,17 @@ async function search() {
       </div>
 
       <!-- Loading -->
-      <div v-if="loading" class="text-center py-10">Loading weather...</div>
+      <!-- <div v-if="loading" class="text-center py-10">Loading weather...</div> -->
 
       <!-- Error -->
-      <div v-else-if="error" class="text-center text-red-500 py-10">
+      <!-- <div v-else-if="error" class="text-center text-red-500 py-10">
         {{ error }}
-      </div>
+      </div> -->
 
       <!-- Weather Content -->
 
       <!-- Main Location Card -->
-      <div v-else class="space-y-4 md:grid md:grid-cols-2 md:gap-6 md:h-[70vh]">
+      <div class="space-y-4 md:grid md:grid-cols-2 md:gap-6 md:h-[70vh]">
         <TodaysForecast
           class="order-1"
           :todays-forecast="activeForecast"
@@ -112,6 +112,7 @@ async function search() {
           :location-name="activeLocationName"
           :todays-date="todaysDate"
           :unit-state="unitState"
+          :is-loading="loading"
         ></TodaysForecast>
         <div
           class="w-full grid grid-cols-3 gap-5 md:grid md:grid-cols-7 order-3"
@@ -127,6 +128,7 @@ async function search() {
             :daily-highest="dailyForecast.maxTemp"
             :daily-lowest="dailyForecast.minTemp"
             :unit-state="unitState"
+            :is-loading="loading"
           ></ForecastTile>
         </div>
         <HourlyForecast
@@ -134,6 +136,7 @@ async function search() {
           :weekOptions="weekOptions"
           :hourlyForecast="hourlyForecast"
           :unit-state="unitState"
+          :is-loading="loading"
           v-model="selectedWeekOption"
         ></HourlyForecast>
       </div>

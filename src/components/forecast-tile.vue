@@ -9,6 +9,7 @@ interface ForecastTileProps {
   dailyLowest: number;
   dailyHighest: number;
   unitState: UnitState;
+  isLoading: boolean;
 }
 
 const props = defineProps<ForecastTileProps>();
@@ -28,7 +29,10 @@ const dailyLowestConverted = computed(()=> {
 });
 </script>
 <template>
-  <div
+  <div v-if="isLoading" class="h-42 rounded-2xl bg-neutral-800 border border-neutral-700">
+
+  </div>
+  <div v-else
     class="h-42 flex flex-col justify-between items-center rounded-2xl bg-neutral-800 p-5 border border-neutral-700"
   >
     <p class="text-neutral-300 md:text-[clamp(0.5rem,2vw,1.3rem)]">{{ props.day }}</p>

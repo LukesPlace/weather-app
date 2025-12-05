@@ -2,6 +2,7 @@
 interface ConditionTileProps {
   title: string;
   value: string;
+  isLoading: boolean;
 }
 
 const props = defineProps<ConditionTileProps>();
@@ -13,7 +14,8 @@ const props = defineProps<ConditionTileProps>();
     <p class="text-neutral-300 text-xl md:text-[clamp(0.5rem,1.5vw,1.2rem)]">
       {{ props.title }}
     </p>
-    <p class="text-neutral-200 md:text-[clamp(0.5rem,1.5vw,2rem)]">
+    <p v-if="isLoading" class="text-xl">-</p>
+    <p v-else class="text-neutral-200 md:text-[clamp(0.5rem,1.5vw,2rem)]">
       {{ props.value }}
     </p>
   </div>

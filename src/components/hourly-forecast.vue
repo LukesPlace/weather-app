@@ -9,6 +9,7 @@ interface HourlyForecastProps {
   weekOptions: Array<{day: string, date: string}>;
   hourlyForecast: Array<HourlyCondition>;
   unitState: UnitState;
+  isLoading: boolean;
 }
 
 const props = defineProps<HourlyForecastProps>();
@@ -17,7 +18,9 @@ const selectedWeekOption: Ref<{day: string, date: string}> = defineModel<{day: s
 const open = ref(false);
 
 function toggle() {
-  open.value = !open.value;
+  if (!props.isLoading) {
+    open.value = !open.value;
+  }
 }
 
 function convert(temp: number){
@@ -41,7 +44,7 @@ function selectDay(weekOption: { day: string, date: string}) {
       <p class="text-neutral-300 text-xl">Hourly forecast</p>
       <div class="relative">
           <button @click="toggle" class="flex items-center gap-2 px-3 py-2 rounded-lg bg-neutral-700 hover:bg-neutral-600 transition">
-            <span class="text-sm font-medium font">{{ selectedWeekOption?.day }}</span>
+            <span class="text-sm font-medium font px-1">{{ isLoading ? '-' : selectedWeekOption?.day }}</span>
             <img src="../../assets/images/icon-dropdown.svg"></img>
           </button>
         <!-- Dropdown menu -->
@@ -57,13 +60,16 @@ function selectDay(weekOption: { day: string, date: string}) {
         class="flex items-center justify-between bg-neutral-700 border border-neutral-600 rounded-xl pr-4"
         v-for="v in hourlyForecast"
       >
-        <div class="flex items-center">
-          <div class="w-16 flex">
-            <WeatherIcon :condition="v.condition" />
+        <div v-if="isLoading"></div>
+        <div v-else class="flex justify-between w-full items-center">
+          <div class="flex items-center">
+            <div class="w-16 flex">
+              <WeatherIcon :condition="v.condition" />
+            </div>
+            <p class="text-2xl">{{ v.formattedTime }}</p>
           </div>
-          <p class="text-2xl">{{ v.formattedTime }}</p>
+          <p class="text-xl text-neutral-300">{{ convert(v.temperature) }}°</p>
         </div>
-        <p class="text-xl text-neutral-300">{{ convert(v.temperature) }}°</p>
       </div>
     </div>
   </div>

@@ -11,6 +11,7 @@ interface TodaysForecastProps {
   countryName: string;
   todaysDate: string;
   unitState: UnitState;
+  isLoading: boolean;
 }
 
 const props = defineProps<TodaysForecastProps>();
@@ -37,7 +38,15 @@ const precipitation = computed(() => {
 
 <template>
   <div class="space-y-6 md:space-y-0 md:flex md:flex-col md:gap-6 md:h-full">
+    <div
+      v-if="isLoading"
+      class="flex flex-col gap-4 justify-center items-center py-10 bg-neutral-800 md:h-full rounded-2xl"
+    >
+      <img src="/assets/images/icon-loading.svg" class="animate-spin"></img>
+      <p>Loading...</p>
+    </div>
     <LocationCard
+      v-else
       class="flex-1"
       :location-name="locationName"
       :country-name="countryName"
@@ -52,21 +61,25 @@ const precipitation = computed(() => {
       <ConditionTile
         title="Feels Like"
         :value="`${feelsLike}°`"
+        :is-loading="isLoading"
       ></ConditionTile>
       <!-- Humidity -->
       <ConditionTile
         title="Humidity"
         :value="`${todaysForecast.current.humidity}%`"
+        :is-loading="isLoading"
       ></ConditionTile>
       <!-- Wind -->
       <ConditionTile
         title="Wind"
         :value="`${windSpeed} ${unitState.isWindSpeedMetric ? 'km/h' : 'mph'}`"
+        :is-loading="isLoading"
       ></ConditionTile>
       <!-- Precipitation -->
       <ConditionTile
         title="Precipitation"
         :value="`${precipitation} ${unitState.isPrecipitationMetric ? 'mm' : 'in'}`"
+        :is-loading="isLoading"
       ></ConditionTile>
     </div>
   </div>
