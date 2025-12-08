@@ -76,35 +76,63 @@ async function search() {
 
 <template>
   <div class="md:h-[90vh]">
+    <!-- Header -->
     <Header>
-      <UnitDropdown v-model="unitState"></UnitDropdown>
+      <UnitDropdown v-model="unitState" aria-label="Select measurement units" />
     </Header>
-    <div v-if="error" class="flex flex-col items-center gap-6">
-      <img src="/assets/images/icon-error.svg" class="w-10"></img>
+
+    <!-- Error -->
+    <div v-if="error" role="alert" class="flex flex-col items-center gap-6">
+      <img
+        src="/assets/images/icon-error.svg"
+        alt=""
+        aria-hidden="true"
+        class="w-10"
+      />
       <h1 class="text-5xl">Something went wrong</h1>
-      <p class="text-neutral-200 text-center">We couldn't connect to the server: {{error}}. Please try <br></br>again in a few moments</p>
-      <button class="flex items-center gap-2 px-3 py-2 rounded-lg bg-neutral-700 hover:bg-neutral-600 transition">
-        <img src="/assets/images/icon-retry.svg"></img>
-        <span class="text-sm font-medium font text-neutral-200">Retry</span>
+      <p class="text-neutral-200 text-center">
+        We couldn't connect to the server: {{ error }}.<br />Please try again
+        shortly.
+      </p>
+
+      <button
+        aria-label="Retry loading weather"
+        class="flex items-center gap-2 px-3 py-2 rounded-lg bg-neutral-700 hover:bg-neutral-600 transition"
+      >
+        <img src="/assets/images/icon-retry.svg" alt="" aria-hidden="true" />
+        <span class="text-sm font-medium text-neutral-200">Retry</span>
       </button>
     </div>
-    <div v-else class="md:h-[90vh] mx-4 space-y-6">
+
+    <!-- Main Content -->
+    <main v-else class="md:h-[90vh] mx-4 space-y-6">
+      <!-- Title -->
       <h1 class="text-7xl text-center py-8 font-bricolage-grotesque">
         How's the sky looking today?
       </h1>
-      <div class="space-y-1 md:flex md:justify-center md:gap-6 md:space-y-0">
-        <CitySelect v-model="place" :cities="popularCities"></CitySelect>
-        <button
-          @click="search"
-          class="w-full py-4 bg-blue-500 rounded-xl mt-2 md:mt-0 md:w-1/12 cursor-pointer"
-        >
-          Search
-        </button>
-      </div>
-      <!-- Weather Content -->
 
-      <!-- Main Location Card -->
+      <!-- Search -->
+      <section aria-labelledby="search-heading">
+        <h2 id="search-heading" class="sr-only">Search for a city</h2>
+        <div class="space-y-1 md:flex md:justify-center md:gap-6 md:space-y-0">
+          <CitySelect
+            v-model="place"
+            :cities="popularCities"
+            aria-label="Choose a city"
+          />
+          <button
+            @click="search"
+            class="w-full py-4 bg-blue-500 rounded-xl mt-2 md:mt-0 md:w-1/12 cursor-pointer"
+            aria-label="Search weather"
+          >
+            Search
+          </button>
+        </div>
+      </section>
+
+      <!-- Weather Content -->
       <div class="space-y-4 md:grid md:grid-cols-2 md:gap-6 md:h-[70vh]">
+        <!-- Today's Forecast -->
         <TodaysForecast
           class="order-1"
           :todays-forecast="activeForecast"
@@ -113,13 +141,20 @@ async function search() {
           :todays-date="todaysDate"
           :unit-state="unitState"
           :is-loading="loading"
-        ></TodaysForecast>
-        <div
-          class="w-full grid grid-cols-3 gap-5 md:grid md:grid-cols-7 order-3"
+        />
+
+        <!-- Daily Forecast -->
+        <section
+          aria-labelledby="daily-forecast-heading"
+          class="w-full grid grid-cols-3 gap-5 md:grid-cols-7 order-3"
         >
-          <h1 class="md:col-span-7 col-span-3 text-xl self-end">
+          <h2
+            id="daily-forecast-heading"
+            class="md:col-span-7 col-span-3 text-xl self-end"
+          >
             Daily forecast
-          </h1>
+          </h2>
+
           <ForecastTile
             v-for="dailyForecast in activeForecast.daily"
             :key="dailyForecast.day"
@@ -129,8 +164,10 @@ async function search() {
             :daily-lowest="dailyForecast.minTemp"
             :unit-state="unitState"
             :is-loading="loading"
-          ></ForecastTile>
-        </div>
+          />
+        </section>
+
+        <!-- Hourly Forecast -->
         <HourlyForecast
           class="order-2 md:row-span-2 md:h-[65vh]"
           :weekOptions="weekOptions"
@@ -138,9 +175,9 @@ async function search() {
           :unit-state="unitState"
           :is-loading="loading"
           v-model="selectedWeekOption"
-        ></HourlyForecast>
+        />
       </div>
-    </div>
+    </main>
   </div>
 </template>
 
