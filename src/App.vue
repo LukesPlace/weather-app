@@ -79,7 +79,16 @@ async function search() {
     <Header>
       <UnitDropdown v-model="unitState"></UnitDropdown>
     </Header>
-    <div class="md:h-[90vh] mx-4 space-y-6">
+    <div v-if="error" class="flex flex-col items-center gap-6">
+      <img src="/assets/images/icon-error.svg" class="w-10"></img>
+      <h1 class="text-5xl">Something went wrong</h1>
+      <p class="text-neutral-200 text-center">We couldn't connect to the server: {{error}}. Please try <br></br>again in a few moments</p>
+      <button class="flex items-center gap-2 px-3 py-2 rounded-lg bg-neutral-700 hover:bg-neutral-600 transition">
+        <img src="/assets/images/icon-retry.svg"></img>
+        <span class="text-sm font-medium font text-neutral-200">Retry</span>
+      </button>
+    </div>
+    <div v-else class="md:h-[90vh] mx-4 space-y-6">
       <h1 class="text-7xl text-center py-8 font-bricolage-grotesque">
         How's the sky looking today?
       </h1>
@@ -92,15 +101,6 @@ async function search() {
           Search
         </button>
       </div>
-
-      <!-- Loading -->
-      <!-- <div v-if="loading" class="text-center py-10">Loading weather...</div> -->
-
-      <!-- Error -->
-      <!-- <div v-else-if="error" class="text-center text-red-500 py-10">
-        {{ error }}
-      </div> -->
-
       <!-- Weather Content -->
 
       <!-- Main Location Card -->
