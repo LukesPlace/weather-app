@@ -2,7 +2,7 @@
 
 🌦️ **Weather Forecast App**
 
-A responsive weather application built with **Vue**, **Open-Meteo API**, and modern UI styling.  
+A responsive weather application built for the [Frontend Mentor](https://www.frontendmentor.io) coding challenge with **Vue**, **Open-Meteo API**, and modern UI styling.  
 Users can search for any city and instantly view real-time weather information, hourly forecasts, and a 7-day outlook.
 
 ### Screenshots
@@ -11,9 +11,9 @@ Users can search for any city and instantly view real-time weather information, 
 ![Desktop hourly dropdown](./public/screenshots/desktop-hourly-dropdown.png)  
 ![Desktop search](./public/screenshots/desktop-search.png)  
 ![Desktop unit dropdown](./public/screenshots/desktop-unit-dropdown.png)  
-![Mobile daily](./public/screenshots/mobile-daily.png)  
-![Mobile hourly dropdown](./public/screenshots/mobile-hourly-dropdown.png)  
 ![Mobile units](./public/screenshots/mobile-units.png)
+![Mobile daily](./public/screenshots/mobile-daily.png)  
+![Mobile hourly dropdown](./public/screenshots/mobile-hourly-dropdown.png)
 
 ## 🚀 Features
 
