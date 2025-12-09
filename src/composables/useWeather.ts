@@ -54,7 +54,6 @@ export function useWeather() {
     const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
       place
     )}&count=1&language=en&format=json`;
-
     const res = await fetch(url);
     const data = await res.json();
 
@@ -106,6 +105,12 @@ export function useWeather() {
     return "sunny";
   }
 
+  async function fetchWeather(lat: number, lon: number) {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&timezone=auto&hourly=temperature_2m,cloud_cover,apparent_temperature,relative_humidity_2m,precipitation,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max`;
+    const res = await fetch(url);
+    return res.json();
+  }
+
   /**
    * Fetch weather by place name
    */
@@ -120,12 +125,7 @@ export function useWeather() {
       locationName.value = geo.cityName;
       countryName.value = geo.country;
 
-      // 2. Build weather query
-      const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${geo.lat}&longitude=${geo.lon}&timezone=auto&hourly=temperature_2m,cloud_cover,apparent_temperature,relative_humidity_2m,precipitation,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max`;
-
-      const weatherRes = await fetch(weatherUrl);
-      const weatherData = await weatherRes.json();
-
+      const weatherData = await fetchWeather(geo.lat, geo.lon);
       //-----------------------------
       // Process current weather
       //-----------------------------
@@ -143,8 +143,11 @@ export function useWeather() {
     forecast,
     locationName,
     countryName,
+    geocode,
     getWeather,
-    parseForecast
+    fetchWeather,
+    parseForecast,
+    getCondition,
   };
 
   function parseForecast(weatherData: any, geo: { lat: any; lon: any; cityName: any; country: any; }) {
