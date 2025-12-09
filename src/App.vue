@@ -80,7 +80,7 @@ async function search() {
 </script>
 
 <template>
-  <div class="md:h-[90vh]">
+  <main class="d:h-[95vh] md:w-[95vw] mx-auto">
     <!-- Header -->
     <Header>
       <UnitDropdown v-model="unitState" />
@@ -110,7 +110,7 @@ async function search() {
     </div>
 
     <!-- Main Content -->
-    <main v-else class="md:h-[90vh] mx-4 space-y-6">
+    <div v-else class="md:h-[90vh] mx-4 space-y-6">
       <!-- Title -->
       <h1 class="text-7xl text-center py-8 font-bricolage-grotesque">
         How's the sky looking today?
@@ -119,15 +119,16 @@ async function search() {
       <!-- Search -->
       <section aria-labelledby="search-heading">
         <h2 id="search-heading" class="sr-only">Search for a city</h2>
-        <div class="space-y-1 md:flex md:justify-center md:gap-6 md:space-y-0">
+        <div class="space-y-1 md:grid md:grid-cols-5 md:gap-6 md:space-y-0">
           <CitySelect
             v-model="place"
             :cities="popularCities"
             aria-label="Choose a city"
+            class="md:col-start-2 md:col-end-4 md:justify-self-end md:max-w-[80%]"
           />
           <button
             @click="search"
-            class="w-full py-4 bg-blue-500 rounded-xl mt-2 md:mt-0 md:w-1/12 cursor-pointer"
+            class="w-full py-4 bg-blue-500 rounded-xl mt-2 md:mt-0 md:w-1/3 cursor-pointer"
             aria-label="Search weather"
           >
             Search
@@ -136,10 +137,10 @@ async function search() {
       </section>
 
       <!-- Weather Content -->
-      <div class="space-y-4 md:grid md:grid-cols-2 md:gap-6 md:h-[70vh]">
+      <div class="space-y-4 md:grid md:grid-cols-5 md:gap-6 md:h-[70vh]">
         <!-- Today's Forecast -->
         <TodaysForecast
-          class="order-1"
+          class="order-1 md:col-span-3"
           :todays-forecast="activeForecast"
           :country-name="activeCountryName"
           :location-name="activeLocationName"
@@ -151,7 +152,7 @@ async function search() {
         <!-- Daily Forecast -->
         <section
           aria-labelledby="daily-forecast-heading"
-          class="w-full grid grid-cols-3 gap-5 md:grid-cols-7 order-3"
+          class="w-full grid grid-cols-3 gap-5 md:grid-cols-7 order-3 md:col-span-3"
         >
           <h2
             id="daily-forecast-heading"
@@ -174,7 +175,7 @@ async function search() {
 
         <!-- Hourly Forecast -->
         <HourlyForecast
-          class="order-2 md:row-span-2 md:h-[65vh]"
+          class="order-2 md:row-span-2 md:h-[65vh] md:col-span-2"
           :weekOptions="weekOptions"
           :hourlyForecast="hourlyForecast"
           :unit-state="unitState"
@@ -182,8 +183,8 @@ async function search() {
           v-model="selectedWeekOption"
         />
       </div>
-    </main>
-  </div>
+    </div>
+  </main>
 </template>
 
 <style scoped></style>

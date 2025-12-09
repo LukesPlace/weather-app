@@ -33,7 +33,7 @@ onBeforeUnmount(() =>
 </script>
 
 <template>
-  <div class="relative w-full md:w-1/3">
+  <div class="relative w-full">
     <!-- Search Input -->
     <label for="city-input" class="sr-only">Search for a city</label>
 

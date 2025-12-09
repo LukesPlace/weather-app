@@ -88,13 +88,16 @@ onBeforeUnmount(() =>
           class="absolute right-4 mt-2 top-10 w-56 bg-neutral-800 border border-neutral-600 rounded-lg shadow-lg p-3 space-y-1 z-10"
         >
           <li
-            v-for="day in weekOptions"
-            :key="day.date"
+            v-for="dayOption in weekOptions"
+            :key="dayOption.date"
             role="option"
-            @click="selectDay(day)"
+            @click="selectDay(dayOption)"
             class="w-full text-left text-sm py-2 px-2 cursor-pointer hover:bg-neutral-600 rounded"
+            :class="{
+              'bg-neutral-600': dayOption.day === selectedWeekOption.day,
+            }"
           >
-            {{ day.day }}
+            {{ dayOption.day }}
           </li>
         </ul>
       </div>

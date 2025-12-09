@@ -51,7 +51,7 @@ const forecastTemperature = computed(() => {
         class="w-35"
       />
       <p
-        class="md:text-[clamp(1rem,5vw,8rem)] text-9xl text-neutral-100"
+        class="md:text-[clamp(1rem,5vw,8rem)] text-9xl text-neutral-100 font-bricolage-grotesque"
         aria-label="Current temperature"
       >
         {{ forecastTemperature }}°
