@@ -83,7 +83,7 @@ async function search() {
   <div class="md:h-[90vh]">
     <!-- Header -->
     <Header>
-      <UnitDropdown v-model="unitState" aria-label="Select measurement units" />
+      <UnitDropdown v-model="unitState" />
     </Header>
 
     <!-- Error -->

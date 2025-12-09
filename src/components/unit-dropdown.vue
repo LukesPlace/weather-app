@@ -49,6 +49,7 @@ onBeforeUnmount(() =>
       aria-haspopup="menu"
       :aria-expanded="open"
       id="unit-menu-button"
+      aria-label="Select measurement units"
     >
       <img src="../../assets/images/icon-units.svg" alt="" />
       <span class="text-sm font-medium">Units</span>

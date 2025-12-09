@@ -3,7 +3,7 @@ export function cToF(celsius: number): number {
 }
 
 export function kmhToMph(kmh: number): number {
-  return Math.max(round(kmh * 0.621371));
+  return Math.max(round(kmh * 0.621371), 0);
 }
 
 export function mmToInches(mm: number): number {
