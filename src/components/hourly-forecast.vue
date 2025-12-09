@@ -3,7 +3,7 @@ import type { HourlyCondition } from "@/composables/useWeather";
 import WeatherIcon from "./weather-icon.vue";
 import type { UnitState } from "./unit-dropdown.vue";
 import { cToF } from "@/utils/conversion";
-import { ref, type Ref } from "vue";
+import { onBeforeUnmount, onMounted, ref, type Ref } from "vue";
 
 interface HourlyForecastProps {
   weekOptions: Array<{ day: string; date: string }>;
@@ -37,6 +37,16 @@ function selectDay(weekOption: { day: string; date: string }) {
   selectedWeekOption.value = weekOption;
   toggle();
 }
+
+function handleClickOutside(e: MouseEvent) {
+  const root = (e.target as HTMLElement).closest(".relative");
+  if (!root) open.value = false;
+}
+
+onMounted(() => document.addEventListener("click", handleClickOutside));
+onBeforeUnmount(() =>
+  document.removeEventListener("click", handleClickOutside)
+);
 </script>
 
 <template>
@@ -57,7 +67,7 @@ function selectDay(weekOption: { day: string; date: string }) {
           aria-haspopup="listbox"
           :aria-expanded="open"
           id="day-selector-button"
-          class="flex items-center gap-2 px-3 py-2 rounded-lg bg-neutral-700 hover:bg-neutral-600 transition"
+          class="flex items-center gap-2 px-3 py-2 rounded-lg bg-neutral-700 hover:bg-neutral-600 transition cursor-pointer"
           :disabled="isLoading"
         >
           <span class="text-sm font-medium px-1">
