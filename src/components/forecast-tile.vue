@@ -52,6 +52,7 @@ const conditionAlt = computed(() => {
   return map[props.condition] || "Weather icon";
 });
 </script>
+
 <template>
   <div
     v-if="isLoading"

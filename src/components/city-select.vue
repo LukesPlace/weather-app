@@ -84,7 +84,7 @@ onBeforeUnmount(() =>
       role="alert"
       class="absolute left-0 right-0 mt-1 bg-neutral-800 rounded-xl shadow-xl p-4 text-neutral-400 z-50"
     >
-      No matching places
+      Search...
     </div>
   </div>
 </template>

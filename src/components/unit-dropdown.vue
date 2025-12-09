@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 
 export interface UnitState {
   isTemperatureMetric: boolean;
@@ -28,6 +28,16 @@ const isMetric = computed(() => {
     state.value.isPrecipitationMetric
   );
 });
+
+function handleClickOutside(e: MouseEvent) {
+  const root = (e.target as HTMLElement).closest(".relative");
+  if (!root) open.value = false;
+}
+
+onMounted(() => document.addEventListener("click", handleClickOutside));
+onBeforeUnmount(() =>
+  document.removeEventListener("click", handleClickOutside)
+);
 </script>
 
 <template>
@@ -35,7 +45,7 @@ const isMetric = computed(() => {
   <div class="relative">
     <button
       @click="toggle"
-      class="flex items-center gap-2 px-3 py-2 rounded-lg bg-neutral-700 hover:bg-neutral-600 transition"
+      class="flex items-center gap-2 px-3 py-2 rounded-lg bg-neutral-700 hover:bg-neutral-600 transition cursor-pointer"
       aria-haspopup="menu"
       :aria-expanded="open"
       id="unit-menu-button"
@@ -55,7 +65,7 @@ const isMetric = computed(() => {
   >
     <!-- Switch all -->
     <button
-      class="w-full text-left text-sm py-1 px-2 hover:bg-neutral-600 rounded"
+      class="w-full text-left text-sm py-1 px-2 hover:bg-neutral-600 rounded cursor-pointer"
       role="menuitem"
       @click="switchUnit(isMetric)"
     >
@@ -70,7 +80,7 @@ const isMetric = computed(() => {
           <button
             @click="state.isTemperatureMetric = true"
             role="menuitem"
-            class="w-full text-left text-sm py-1 px-2 rounded hover:bg-neutral-600"
+            class="w-full text-left text-sm py-1 px-2 rounded hover:bg-neutral-600 cursor-pointer"
             :class="{ 'bg-neutral-600': state.isTemperatureMetric }"
           >
             Celsius (°C)
@@ -80,7 +90,7 @@ const isMetric = computed(() => {
           <button
             @click="state.isTemperatureMetric = false"
             role="menuitem"
-            class="w-full text-left text-sm py-1 px-2 rounded hover:bg-neutral-600"
+            class="w-full text-left text-sm py-1 px-2 rounded hover:bg-neutral-600 cursor-pointer"
             :class="{ 'bg-neutral-600': !state.isTemperatureMetric }"
           >
             Fahrenheit (°F)
@@ -97,7 +107,7 @@ const isMetric = computed(() => {
           <button
             @click="state.isWindSpeedMetric = true"
             role="menuitem"
-            class="w-full text-left text-sm py-1 px-2 rounded hover:bg-neutral-600"
+            class="w-full text-left text-sm py-1 px-2 rounded hover:bg-neutral-600 cursor-pointer"
             :class="{ 'bg-neutral-600': state.isWindSpeedMetric }"
           >
             km/h
@@ -107,7 +117,7 @@ const isMetric = computed(() => {
           <button
             @click="state.isWindSpeedMetric = false"
             role="menuitem"
-            class="w-full text-left text-sm py-1 px-2 rounded hover:bg-neutral-600"
+            class="w-full text-left text-sm py-1 px-2 rounded hover:bg-neutral-600 cursor-pointer"
             :class="{ 'bg-neutral-600': !state.isWindSpeedMetric }"
           >
             mph
@@ -126,7 +136,7 @@ const isMetric = computed(() => {
           <button
             @click="state.isPrecipitationMetric = true"
             role="menuitem"
-            class="w-full text-left text-sm py-1 px-2 rounded hover:bg-neutral-600"
+            class="w-full text-left text-sm py-1 px-2 rounded hover:bg-neutral-600 cursor-pointer"
             :class="{ 'bg-neutral-600': state.isPrecipitationMetric }"
           >
             Millimeters (mm)
@@ -136,7 +146,7 @@ const isMetric = computed(() => {
           <button
             @click="state.isPrecipitationMetric = false"
             role="menuitem"
-            class="w-full text-left text-sm py-1 px-2 rounded hover:bg-neutral-600"
+            class="w-full text-left text-sm py-1 px-2 rounded hover:bg-neutral-600 cursor-pointer"
             :class="{ 'bg-neutral-600': !state.isPrecipitationMetric }"
           >
             Inches (in)

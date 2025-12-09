@@ -2,7 +2,6 @@
 import { computed } from "vue";
 import ConditionTile from "./condition-tile.vue";
 import LocationCard from "./location-card.vue";
-
 import type { UnitState } from "./unit-dropdown.vue";
 import { cToF, kmhToMph, mmToInches } from "@/utils/conversion";
 import type { Forecast } from "@/composables/useWeather";
@@ -38,9 +37,11 @@ const precipitation = computed(() =>
 </script>
 
 <template>
-  <div class="space-y-6 md:space-y-0 md:flex md:flex-col md:gap-6 md:h-full">
+  <section
+    class="space-y-6 md:space-y-0 md:flex md:flex-col md:gap-6 md:h-full"
+  >
     <!-- Loading State -->
-    <div
+    <section
       v-if="isLoading"
       class="flex flex-col gap-4 justify-center items-center py-10 bg-neutral-800 md:h-full rounded-2xl"
       role="status"
@@ -53,7 +54,7 @@ const precipitation = computed(() =>
         aria-hidden="true"
       />
       <p class="text-neutral-300">Loading...</p>
-    </div>
+    </section>
 
     <!-- Main Location Card -->
     <LocationCard
@@ -96,5 +97,5 @@ const precipitation = computed(() =>
         :is-loading="isLoading"
       />
     </div>
-  </div>
+  </section>
 </template>

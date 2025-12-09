@@ -61,7 +61,9 @@ const activeCountryName = computed(() => {
 });
 
 const hourlyForecast: ComputedRef<Array<HourlyCondition>> = computed(() => {
-  if (!activeForecast.value) return [];
+  if (!activeForecast.value) {
+    return [];
+  }
   return filterTodayFromCurrentHour(
     activeForecast.value.hourly,
     new Date(selectedWeekOption.value.date)
@@ -69,7 +71,10 @@ const hourlyForecast: ComputedRef<Array<HourlyCondition>> = computed(() => {
 });
 
 async function search() {
-  if (!place.value) return;
+  if (!place.value) {
+    return;
+  }
+
   await getWeather(place.value);
 }
 </script>
