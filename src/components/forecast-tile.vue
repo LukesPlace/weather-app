@@ -60,6 +60,7 @@ const conditionAlt = computed(() => {
   ></div>
 
   <article
+    data-testid="forecast-tile"
     v-else
     class="h-42 flex flex-col justify-between items-center rounded-2xl bg-neutral-800 p-5 border border-neutral-700"
   >

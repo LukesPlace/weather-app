@@ -45,7 +45,7 @@ function handleClickOutside(e: MouseEvent) {
 
 onMounted(() => document.addEventListener("click", handleClickOutside));
 onBeforeUnmount(() =>
-  document.removeEventListener("click", handleClickOutside)
+  document.removeEventListener("click", handleClickOutside),
 );
 </script>
 
@@ -106,6 +106,7 @@ onBeforeUnmount(() =>
     <!-- Hourly list -->
     <ol class="md:h-full w-full grid grid-rows-8 gap-4 overflow-hidden">
       <li
+        data-testid="hourly-row"
         class="flex items-center justify-between bg-neutral-700 border border-neutral-600 rounded-xl pr-4"
         v-for="v in hourlyForecast"
         :key="v.formattedTime + v.temperature"
@@ -122,7 +123,9 @@ onBeforeUnmount(() =>
             <p class="text-2xl">{{ v.formattedTime }}</p>
           </div>
 
-          <p class="text-xl text-neutral-300">{{ convert(v.temperature) }}°</p>
+          <p data-testid="hourly-temperature" class="text-xl text-neutral-300">
+            {{ convert(v.temperature) }}°
+          </p>
         </div>
       </li>
     </ol>
