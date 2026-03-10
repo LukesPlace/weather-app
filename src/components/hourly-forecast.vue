@@ -112,7 +112,12 @@ onBeforeUnmount(() =>
         :key="v.formattedTime + v.temperature"
       >
         <!-- Loading -->
-        <div v-if="isLoading" aria-busy="true"></div>
+        <div
+          v-if="isLoading"
+          aria-busy="true"
+          role="status"
+          aria-label="Loading hourly forecast tile"
+        ></div>
 
         <!-- Loaded -->
         <div v-else class="flex justify-between w-full items-center">

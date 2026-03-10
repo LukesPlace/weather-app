@@ -20,19 +20,19 @@ const props = defineProps<TodaysForecastProps>();
 const feelsLike = computed(() =>
   props.unitState.isTemperatureMetric
     ? props.todaysForecast.current.feelsLike
-    : cToF(props.todaysForecast.current.feelsLike)
+    : cToF(props.todaysForecast.current.feelsLike),
 );
 
 const windSpeed = computed(() =>
   props.unitState.isWindSpeedMetric
     ? props.todaysForecast.current.windSpeed
-    : kmhToMph(props.todaysForecast.current.windSpeed)
+    : kmhToMph(props.todaysForecast.current.windSpeed),
 );
 
 const precipitation = computed(() =>
   props.unitState.isPrecipitationMetric
     ? props.todaysForecast.current.precipitation
-    : mmToInches(props.todaysForecast.current.precipitation)
+    : mmToInches(props.todaysForecast.current.precipitation),
 );
 </script>
 
@@ -46,6 +46,7 @@ const precipitation = computed(() =>
       class="flex flex-col gap-4 justify-center items-center py-10 bg-neutral-800 md:h-full rounded-2xl"
       role="status"
       aria-busy="true"
+      aria-label="Loading todays forecast"
     >
       <img
         src="/assets/images/icon-loading.svg"

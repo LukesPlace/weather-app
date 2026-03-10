@@ -4,7 +4,6 @@ import weather from './fixtures/weather.json' with { type: 'json' };
 
 
 test.describe('Weather search', ()=> {
-
   //Mocking time so dummy data stays correct
   test.beforeEach(async ({ page }) => {
     await page.addInitScript(() => {
@@ -32,7 +31,7 @@ test.describe('Weather search', ()=> {
 
   test('Shows weather data for a searched city', async ({ page }) => {
 
-    // mock geocode
+  // mock geocode
   await page.route('**/geocoding-api.open-meteo.com/**', route =>
     route.fulfill({
       status: 200,
@@ -92,5 +91,68 @@ test.describe('Weather search', ()=> {
     for (const [i, tempTile] of (await hourlyForecastRows.all()).entries()) {
       await expect(tempTile).toHaveText(`${expectedHourlyTemps[i]}°`);
     }
+  });
+
+  test('shows loading icon while fetching data', async ({ page }) => {
+    let resolveApi: () => void;
+    const apiPromise = new Promise<void>(resolve => {
+      resolveApi = resolve;
+    });
+
+    await page.route('**/api.open-meteo.com/**', async route => {
+      await apiPromise;
+
+      await route.fulfill({
+        status: 200,
+        body: JSON.stringify(weather),
+      });
+    });
+
+    await page.goto('/');
+
+    await page.getByRole('combobox', { name: 'Search for a city' }).fill('Tokyo');
+    await page.getByRole('button', { name: 'Search' }).click();
+
+    // loading visible
+    await expect(page.getByRole('status', { name: 'Loading todays forecast'})).toBeVisible();
+
+    const dailyForecastRows = page.getByRole('status', { name: 'Loading daily forecast tile'});
+    await expect(dailyForecastRows).toHaveCount(7);
+
+    const hourlyForecastRows = page.getByRole('status', { name: 'Loading hourly forecast tile'});
+    await expect(hourlyForecastRows).toHaveCount(8);
+
+    // release API response
+    resolveApi!();
+
+    // UI loads
+    await expect(page.getByRole('status', { name: 'Loading todays forecast'})).toBeHidden();
+  });
+
+  test('Invalid place name entered', async ({ page })=> {
+    await page.route('**/geocoding-api.open-meteo.com/**', route =>
+      route.fulfill({
+        status: 500,
+        contentType: 'application/json',
+        body: JSON.stringify({ error: 'Internal Server Error' })
+      })
+    );
+
+    await page.route('**/api.open-meteo.com/**', route =>
+      route.fulfill({
+        status: 400,
+        contentType: 'application/json',
+        body: JSON.stringify({ error: 'Bad Request' })
+      })
+    );
+
+    await page.goto('/');
+
+    await page.getByRole('combobox', { name: 'Search for a city' }).fill('Invalid place');
+    await page.getByRole('button', { name: 'Search' }).click();
+
+    await expect(page.getByRole('heading', {name: 'Something went wrong'})).toBeVisible();
+    await expect(page.getByRole('alert', { name: 'Weather error' })).toBeVisible();
+    await expect(page.getByRole('button', {name: 'Retry'})).toBeVisible();  
   });
 })

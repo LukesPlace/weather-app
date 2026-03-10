@@ -56,6 +56,9 @@ const conditionAlt = computed(() => {
 <template>
   <div
     v-if="isLoading"
+    role="status"
+    aria-label="Loading daily forecast tile"
+    aria-busy="true"
     class="h-42 rounded-2xl bg-neutral-800 border border-neutral-700"
   ></div>
 

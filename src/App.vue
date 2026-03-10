@@ -45,7 +45,7 @@ const dummyForecast: Ref<Forecast> = ref(
     lon: dummyData.longitude,
     cityName: "Berlin",
     country: "Germany",
-  })
+  }),
 );
 
 const activeForecast = computed(() => {
@@ -66,7 +66,7 @@ const hourlyForecast: ComputedRef<Array<HourlyCondition>> = computed(() => {
   }
   return filterTodayFromCurrentHour(
     activeForecast.value.hourly,
-    new Date(selectedWeekOption.value.date)
+    new Date(selectedWeekOption.value.date),
   );
 });
 
@@ -76,6 +76,11 @@ async function search() {
   }
 
   await getWeather(place.value);
+}
+
+function onErrorReset() {
+  error.value = null;
+  place.value = "";
 }
 </script>
 
@@ -87,7 +92,12 @@ async function search() {
     </Header>
 
     <!-- Error -->
-    <div v-if="error" role="alert" class="flex flex-col items-center gap-6">
+    <div
+      v-if="error"
+      role="alert"
+      aria-label="Weather error"
+      class="flex flex-col items-center gap-6"
+    >
       <img
         src="/assets/images/icon-error.svg"
         alt=""
@@ -96,13 +106,13 @@ async function search() {
       />
       <h1 class="text-5xl">Something went wrong</h1>
       <p class="text-neutral-200 text-center">
-        We couldn't connect to the server: {{ error }}.<br />Please try again
-        shortly.
+        {{ error }}. <br />Please try again shortly.
       </p>
 
       <button
         aria-label="Retry loading weather"
         class="flex items-center gap-2 px-3 py-2 rounded-lg bg-neutral-700 hover:bg-neutral-600 transition"
+        @click="onErrorReset"
       >
         <img src="/assets/images/icon-retry.svg" alt="" aria-hidden="true" />
         <span class="text-sm font-medium text-neutral-200">Retry</span>
