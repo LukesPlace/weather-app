@@ -149,7 +149,6 @@ export function useWeather() {
   async function getWeather(place: string) {
     loading.value = true;
     error.value = null;
-    forecast.value = null;
 
     try {
       const geo = await geocode(place);
@@ -164,7 +163,6 @@ export function useWeather() {
   async function getCurrentLocationWeather() {
     loading.value = true;
     error.value = null;
-    forecast.value = null;
 
     try {
       if (typeof navigator === "undefined" || !("geolocation" in navigator)) {

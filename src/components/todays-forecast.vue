@@ -7,7 +7,7 @@ import { cToF, kmhToMph, mmToInches } from "@/utils/conversion";
 import type { Forecast } from "@/composables/useWeather";
 
 interface TodaysForecastProps {
-  todaysForecast: Forecast;
+  todaysForecast: Forecast | null;
   locationName: string;
   countryName: string;
   todaysDate: string;
@@ -17,23 +17,29 @@ interface TodaysForecastProps {
 
 const props = defineProps<TodaysForecastProps>();
 
-const feelsLike = computed(() =>
-  props.unitState.isTemperatureMetric
+const feelsLike = computed(() => {
+  if (!props.todaysForecast) return 0;
+
+  return props.unitState.isTemperatureMetric
     ? props.todaysForecast.current.feelsLike
-    : cToF(props.todaysForecast.current.feelsLike),
-);
+    : cToF(props.todaysForecast.current.feelsLike);
+});
 
-const windSpeed = computed(() =>
-  props.unitState.isWindSpeedMetric
+const windSpeed = computed(() => {
+  if (!props.todaysForecast) return 0;
+
+  return props.unitState.isWindSpeedMetric
     ? props.todaysForecast.current.windSpeed
-    : kmhToMph(props.todaysForecast.current.windSpeed),
-);
+    : kmhToMph(props.todaysForecast.current.windSpeed);
+});
 
-const precipitation = computed(() =>
-  props.unitState.isPrecipitationMetric
+const precipitation = computed(() => {
+  if (!props.todaysForecast) return 0;
+
+  return props.unitState.isPrecipitationMetric
     ? props.todaysForecast.current.precipitation
-    : mmToInches(props.todaysForecast.current.precipitation),
-);
+    : mmToInches(props.todaysForecast.current.precipitation);
+});
 </script>
 
 <template>
@@ -80,7 +86,7 @@ const precipitation = computed(() =>
       <!-- Humidity -->
       <ConditionTile
         title="Humidity"
-        :value="`${todaysForecast.current.humidity}%`"
+        :value="`${todaysForecast?.current.humidity ?? 0}%`"
         :is-loading="isLoading"
       />
 

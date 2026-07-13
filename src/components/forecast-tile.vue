@@ -54,13 +54,14 @@ const conditionAlt = computed(() => {
 </script>
 
 <template>
-  <div
+  <article
     v-if="isLoading"
     role="status"
     aria-label="Loading daily forecast tile"
+    data-testid="loading-daily-forecast-tile"
     aria-busy="true"
     class="h-42 rounded-2xl bg-neutral-800 border border-neutral-700"
-  ></div>
+  ></article>
 
   <article
     data-testid="forecast-tile"

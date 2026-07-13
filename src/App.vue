@@ -142,10 +142,7 @@ function onErrorReset() {
       </section>
 
       <!-- Weather Content -->
-      <div
-        v-if="activeForecast"
-        class="space-y-4 md:grid md:grid-cols-5 md:gap-6 md:h-[70vh]"
-      >
+      <div class="space-y-4 md:grid md:grid-cols-5 md:gap-6 md:h-[70vh]">
         <!-- Today's Forecast -->
         <TodaysForecast
           class="order-1 md:col-span-3"
@@ -170,7 +167,7 @@ function onErrorReset() {
           </h2>
 
           <ForecastTile
-            v-for="dailyForecast in activeForecast.daily"
+            v-for="dailyForecast in activeForecast?.daily ?? []"
             :key="dailyForecast.day"
             :day="dailyForecast.day"
             :condition="dailyForecast.condition"
@@ -190,12 +187,6 @@ function onErrorReset() {
           :is-loading="loading"
           v-model="selectedWeekOption"
         />
-      </div>
-      <div
-        v-else
-        class="flex items-center justify-center rounded-2xl bg-neutral-800 py-16 text-neutral-300"
-      >
-        Loading todays forecast
       </div>
     </div>
   </main>

@@ -8,12 +8,14 @@ interface LocationCardProps {
   locationName: string;
   countryName: string;
   todaysDate: string;
-  forecast: Forecast;
+  forecast: Forecast | null;
   unitState: UnitState;
 }
 const props = defineProps<LocationCardProps>();
 
 const forecastTemperature = computed(() => {
+  if (!props.forecast) return 0;
+
   if (props.unitState.isTemperatureMetric) {
     return props.forecast.current.temperature;
   }

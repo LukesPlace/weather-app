@@ -106,21 +106,28 @@ onBeforeUnmount(() =>
     <!-- Hourly list -->
     <ol class="md:h-full w-full grid grid-rows-8 gap-4 overflow-hidden">
       <li
+        v-if="isLoading"
+        v-for="index in 8"
+        :key="`loading-row-${index}`"
         data-testid="hourly-row"
         class="flex items-center justify-between bg-neutral-700 border border-neutral-600 rounded-xl pr-4"
-        v-for="v in hourlyForecast"
-        :key="v.formattedTime + v.temperature"
       >
-        <!-- Loading -->
         <div
-          v-if="isLoading"
+          class="flex justify-between w-full items-center py-4"
           aria-busy="true"
           role="status"
           aria-label="Loading hourly forecast tile"
         ></div>
+      </li>
 
-        <!-- Loaded -->
-        <div v-else class="flex justify-between w-full items-center">
+      <li
+        v-else
+        v-for="v in hourlyForecast"
+        :key="v.formattedTime + v.temperature"
+        data-testid="hourly-row"
+        class="flex items-center justify-between bg-neutral-700 border border-neutral-600 rounded-xl pr-4"
+      >
+        <div class="flex justify-between w-full items-center py-4">
           <div class="flex items-center">
             <div class="w-16 flex">
               <WeatherIcon :condition="v.condition" />
