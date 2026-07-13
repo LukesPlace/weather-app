@@ -4,34 +4,34 @@ import { getWeekday } from "@/utils/date";
 import { ref } from "vue";
 
 export interface Condition {
-  temperature: number,
-  feelsLike: number,
-  humidity: number,
-  windSpeed: number,
-  precipitation: number,
-  condition: ConditionIcon
+  temperature: number;
+  feelsLike: number;
+  humidity: number;
+  windSpeed: number;
+  precipitation: number;
+  condition: ConditionIcon;
 }
 
 export interface DailyCondition {
-  date: Date,
-  day: string,
-  maxTemp: number,
-  minTemp: number,
-  maxWind: number,
-  precipitation: number,
-  condition: ConditionIcon,
+  date: Date;
+  day: string;
+  maxTemp: number;
+  minTemp: number;
+  maxWind: number;
+  precipitation: number;
+  condition: ConditionIcon;
 }
 
 export interface HourlyCondition extends Condition {
-  time: string,
-  formattedTime: string
+  time: string;
+  formattedTime: string;
 }
 
 export interface Forecast {
-  current: Condition,
-  daily: Array<DailyCondition>,
-  hourly: Array<HourlyCondition>,
-  location: LocationData
+  current: Condition;
+  daily: Array<DailyCondition>;
+  hourly: Array<HourlyCondition>;
+  location: LocationData;
 }
 
 interface LocationData {
@@ -52,7 +52,7 @@ export function useWeather() {
    */
   async function geocode(place: string) {
     const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
-      place
+      place,
     )}&count=1&language=en&format=json`;
     const res = await fetch(url);
     const data = await res.json();
@@ -67,7 +67,7 @@ export function useWeather() {
       lat: loc.latitude,
       lon: loc.longitude,
       cityName: loc.name,
-      country: loc.country
+      country: loc.country,
     };
   }
 
@@ -75,7 +75,7 @@ export function useWeather() {
     temperature,
     precipitation,
     humidity,
-    cloudCover
+    cloudCover,
   }: {
     temperature: number;
     precipitation: number;
@@ -111,6 +111,38 @@ export function useWeather() {
     return res.json();
   }
 
+  async function reverseGeocode(lat: number, lon: number) {
+    const url = `https://geocoding-api.open-meteo.com/v1/reverse?latitude=${lat}&longitude=${lon}&language=en&format=json`;
+    const res = await fetch(url);
+    const data = await res.json();
+
+    if (!data.results || data.results.length === 0) {
+      throw new Error("Unable to determine your location");
+    }
+
+    const loc = data.results[0];
+
+    return {
+      lat,
+      lon,
+      cityName: loc.name,
+      country: loc.country,
+    };
+  }
+
+  async function loadForecastForLocation(geo: {
+    lat: number;
+    lon: number;
+    cityName: string;
+    country: string;
+  }) {
+    locationName.value = geo.cityName;
+    countryName.value = geo.country;
+
+    const weatherData = await fetchWeather(geo.lat, geo.lon);
+    forecast.value = parseForecast(weatherData, geo);
+  }
+
   /**
    * Fetch weather by place name
    */
@@ -120,18 +152,46 @@ export function useWeather() {
     forecast.value = null;
 
     try {
-      // 1. Convert place → lat/lon
       const geo = await geocode(place);
-      locationName.value = geo.cityName;
-      countryName.value = geo.country;
-
-      const weatherData = await fetchWeather(geo.lat, geo.lon);
-      //-----------------------------
-      // Process current weather
-      //-----------------------------
-      forecast.value = parseForecast(weatherData, geo);
+      await loadForecastForLocation(geo);
     } catch (err: any) {
       error.value = err.message;
+    } finally {
+      loading.value = false;
+    }
+  }
+
+  async function getCurrentLocationWeather() {
+    loading.value = true;
+    error.value = null;
+    forecast.value = null;
+
+    try {
+      if (typeof navigator === "undefined" || !("geolocation" in navigator)) {
+        throw new Error("Geolocation is not supported by your browser");
+      }
+
+      const position = await new Promise<GeolocationPosition>(
+        (resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject);
+        },
+      );
+
+      const geo = await reverseGeocode(
+        position.coords.latitude,
+        position.coords.longitude,
+      );
+      await loadForecastForLocation(geo);
+    } catch (err) {
+      try {
+        await getWeather("Tokyo");
+      } catch (fallbackErr: any) {
+        const message =
+          fallbackErr instanceof Error
+            ? fallbackErr.message
+            : "Unable to load your local weather";
+        error.value = message;
+      }
     } finally {
       loading.value = false;
     }
@@ -145,12 +205,16 @@ export function useWeather() {
     countryName,
     geocode,
     getWeather,
+    getCurrentLocationWeather,
     fetchWeather,
     parseForecast,
     getCondition,
   };
 
-  function parseForecast(weatherData: any, geo: { lat: any; lon: any; cityName: any; country: any; }) {
+  function parseForecast(
+    weatherData: any,
+    geo: { lat: any; lon: any; cityName: any; country: any },
+  ) {
     const h = weatherData.hourly;
 
     const current = {
@@ -163,8 +227,8 @@ export function useWeather() {
         temperature: h.temperature_2m[0],
         precipitation: h.precipitation[0],
         humidity: h.relative_humidity_2m[0],
-        cloudCover: 0 //no cloud cover
-      })
+        cloudCover: 0, //no cloud cover
+      }),
     };
 
     //-----------------------------
@@ -181,8 +245,8 @@ export function useWeather() {
         temperature: h.temperature_2m[i],
         precipitation: h.precipitation[i],
         humidity: h.relative_humidity_2m[i],
-        cloudCover: h.cloud_cover[i]
-      })
+        cloudCover: h.cloud_cover[i],
+      }),
     }));
 
     //-----------------------------
@@ -200,8 +264,8 @@ export function useWeather() {
         temperature: round(d.temperature_2m_max[i]),
         precipitation: d.precipitation_sum[i],
         humidity: 50, //No humidity in daily = assume average
-        cloudCover: 0 // no cloud cover
-      })
+        cloudCover: 0, // no cloud cover
+      }),
     }));
 
     // Final structured forecast
@@ -210,11 +274,11 @@ export function useWeather() {
         name: geo.cityName,
         country: geo.country,
         lat: geo.lat,
-        lon: geo.lon
+        lon: geo.lon,
       },
       current,
       hourly,
-      daily
+      daily,
     };
   }
 }

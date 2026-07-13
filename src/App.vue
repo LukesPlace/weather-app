@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { computed, ref, type ComputedRef, type Ref } from "vue";
+import { computed, onMounted, ref, type ComputedRef, type Ref } from "vue";
 import ForecastTile from "./components/forecast-tile.vue";
 import Header from "./components/header.vue";
 import HourlyForecast from "./components/hourly-forecast.vue";
-import dummyData from "@/data/dummy-data.json";
 import {
   useWeather,
   type Forecast,
@@ -36,28 +35,23 @@ const {
   locationName,
   countryName,
   getWeather,
-  parseForecast,
+  getCurrentLocationWeather,
 } = useWeather();
 
-const dummyForecast: Ref<Forecast> = ref(
-  parseForecast(dummyData, {
-    lat: dummyData.latitude,
-    lon: dummyData.longitude,
-    cityName: "Berlin",
-    country: "Germany",
-  }),
-);
+onMounted(() => {
+  void getCurrentLocationWeather();
+});
 
-const activeForecast = computed(() => {
-  return forecast.value || dummyForecast.value;
+const activeForecast = computed<Forecast | null>(() => {
+  return forecast.value;
 });
 
 const activeLocationName = computed(() => {
-  return locationName.value || dummyForecast.value?.location?.name || "";
+  return locationName.value || "";
 });
 
 const activeCountryName = computed(() => {
-  return countryName.value || dummyForecast.value?.location?.country || "";
+  return countryName.value || "";
 });
 
 const hourlyForecast: ComputedRef<Array<HourlyCondition>> = computed(() => {
@@ -81,6 +75,7 @@ async function search() {
 function onErrorReset() {
   error.value = null;
   place.value = "";
+  void getCurrentLocationWeather();
 }
 </script>
 
@@ -147,7 +142,10 @@ function onErrorReset() {
       </section>
 
       <!-- Weather Content -->
-      <div class="space-y-4 md:grid md:grid-cols-5 md:gap-6 md:h-[70vh]">
+      <div
+        v-if="activeForecast"
+        class="space-y-4 md:grid md:grid-cols-5 md:gap-6 md:h-[70vh]"
+      >
         <!-- Today's Forecast -->
         <TodaysForecast
           class="order-1 md:col-span-3"
@@ -192,6 +190,12 @@ function onErrorReset() {
           :is-loading="loading"
           v-model="selectedWeekOption"
         />
+      </div>
+      <div
+        v-else
+        class="flex items-center justify-center rounded-2xl bg-neutral-800 py-16 text-neutral-300"
+      >
+        Loading todays forecast
       </div>
     </div>
   </main>

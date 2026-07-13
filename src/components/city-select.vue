@@ -12,7 +12,7 @@ const open = ref<boolean>(false);
 const filteredCities = computed<string[]>(() => {
   if (!place.value) return props.cities;
   return props.cities.filter((city: string) =>
-    city.toLowerCase().includes(place.value!.toLowerCase())
+    city.toLowerCase().includes(place.value!.toLowerCase()),
   );
 });
 
@@ -28,7 +28,7 @@ function handleClickOutside(e: MouseEvent) {
 
 onMounted(() => document.addEventListener("click", handleClickOutside));
 onBeforeUnmount(() =>
-  document.removeEventListener("click", handleClickOutside)
+  document.removeEventListener("click", handleClickOutside),
 );
 </script>
 
@@ -48,7 +48,10 @@ onBeforeUnmount(() =>
       <input
         id="city-input"
         type="text"
-        autofocus
+        autocomplete="off"
+        autocapitalize="none"
+        spellcheck="false"
+        name="city-search"
         role="combobox"
         aria-autocomplete="list"
         :aria-expanded="open"

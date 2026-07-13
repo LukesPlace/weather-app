@@ -21,49 +21,89 @@ describe("useWeather composable", () => {
 
     it("returns snow when cold + precipitation high", () => {
       expect(
-        getCondition({ temperature: 0, precipitation: 1, humidity: 20, cloudCover: 50 })
+        getCondition({
+          temperature: 0,
+          precipitation: 1,
+          humidity: 20,
+          cloudCover: 50,
+        }),
       ).toBe("snow");
     });
 
     it("returns storm when precipitation very high", () => {
       expect(
-        getCondition({ temperature: 10, precipitation: 9, humidity: 20, cloudCover: 20 })
+        getCondition({
+          temperature: 10,
+          precipitation: 9,
+          humidity: 20,
+          cloudCover: 20,
+        }),
       ).toBe("storm");
     });
 
     it("returns rain when precipitation >2", () => {
       expect(
-        getCondition({ temperature: 10, precipitation: 3, humidity: 20, cloudCover: 20 })
+        getCondition({
+          temperature: 10,
+          precipitation: 3,
+          humidity: 20,
+          cloudCover: 20,
+        }),
       ).toBe("rain");
     });
 
     it("returns drizzle when precipitation 0–2", () => {
       expect(
-        getCondition({ temperature: 10, precipitation: 1, humidity: 20, cloudCover: 20 })
+        getCondition({
+          temperature: 10,
+          precipitation: 1,
+          humidity: 20,
+          cloudCover: 20,
+        }),
       ).toBe("drizzle");
     });
 
     it("returns fog when humidity high + clouds high", () => {
       expect(
-        getCondition({ temperature: 10, precipitation: 0, humidity: 99, cloudCover: 90 })
+        getCondition({
+          temperature: 10,
+          precipitation: 0,
+          humidity: 99,
+          cloudCover: 90,
+        }),
       ).toBe("fog");
     });
 
     it("returns overcast when cloudCover > 85", () => {
       expect(
-        getCondition({ temperature: 10, precipitation: 0, humidity: 20, cloudCover: 90 })
+        getCondition({
+          temperature: 10,
+          precipitation: 0,
+          humidity: 20,
+          cloudCover: 90,
+        }),
       ).toBe("overcast");
     });
 
     it("returns partly-cloudy when cloudCover > 35", () => {
       expect(
-        getCondition({ temperature: 10, precipitation: 0, humidity: 20, cloudCover: 60 })
+        getCondition({
+          temperature: 10,
+          precipitation: 0,
+          humidity: 20,
+          cloudCover: 60,
+        }),
       ).toBe("partly-cloudy");
     });
 
     it("returns sunny by default", () => {
       expect(
-        getCondition({ temperature: 10, precipitation: 0, humidity: 20, cloudCover: 10 })
+        getCondition({
+          temperature: 10,
+          precipitation: 0,
+          humidity: 20,
+          cloudCover: 10,
+        }),
       ).toBe("sunny");
     });
   });
@@ -77,8 +117,8 @@ describe("useWeather composable", () => {
 
       const mockData = {
         results: [
-          { latitude: 21.5, longitude: -0.5, name: "London", country: "UK" }
-        ]
+          { latitude: 21.5, longitude: -0.5, name: "London", country: "UK" },
+        ],
       };
 
       vi.stubGlobal("fetch", mockFetchOnce(mockData));
@@ -89,7 +129,7 @@ describe("useWeather composable", () => {
         lat: 21.5,
         lon: -0.5,
         cityName: "London",
-        country: "UK"
+        country: "UK",
       });
     });
 
@@ -124,8 +164,8 @@ describe("useWeather composable", () => {
           temperature_2m_max: [12, 14],
           temperature_2m_min: [5, 7],
           precipitation_sum: [0, 1],
-          wind_speed_10m_max: [10, 12]
-        }
+          wind_speed_10m_max: [10, 12],
+        },
       };
 
       const geo = { lat: 1, lon: 2, cityName: "Test", country: "TC" };
@@ -156,6 +196,85 @@ describe("useWeather composable", () => {
   });
 
   // -------------------------------------------------------------
+  // getCurrentLocationWeather()
+  // -------------------------------------------------------------
+  describe("getCurrentLocationWeather()", () => {
+    it("uses browser geolocation to fetch weather for the current location", async () => {
+      const {
+        getCurrentLocationWeather,
+        loading,
+        error,
+        forecast,
+        locationName,
+        countryName,
+      } = useWeather();
+
+      const getCurrentPosition = vi.fn((success: PositionCallback) => {
+        success({
+          coords: {
+            latitude: 51.5,
+            longitude: -0.1,
+            accuracy: 10,
+            altitude: null,
+            altitudeAccuracy: null,
+            heading: null,
+            speed: null,
+          },
+        } as GeolocationPosition);
+      });
+
+      Object.defineProperty(globalThis, "navigator", {
+        value: { geolocation: { getCurrentPosition } },
+        configurable: true,
+      });
+
+      const reverseGeocodeData = {
+        results: [{ name: "London", country: "UK" }],
+      };
+
+      const weatherData = {
+        hourly: {
+          time: ["2025-01-01T00:00"],
+          temperature_2m: [10],
+          apparent_temperature: [9],
+          relative_humidity_2m: [50],
+          precipitation: [0],
+          wind_speed_10m: [5],
+          cloud_cover: [10],
+        },
+        daily: {
+          time: ["2025-01-01"],
+          temperature_2m_max: [12],
+          temperature_2m_min: [5],
+          precipitation_sum: [0],
+          wind_speed_10m_max: [10],
+        },
+      };
+
+      const mock = vi
+        .fn()
+        .mockResolvedValueOnce({
+          json: () => Promise.resolve(reverseGeocodeData),
+        })
+        .mockResolvedValueOnce({
+          json: () => Promise.resolve(weatherData),
+        });
+
+      vi.stubGlobal("fetch", mock);
+
+      await getCurrentLocationWeather();
+      await nextTick();
+
+      expect(getCurrentPosition).toHaveBeenCalled();
+      expect(error.value).toBe(null);
+      expect(locationName.value).toBe("London");
+      expect(countryName.value).toBe("UK");
+      expect(forecast.value?.location.lat).toBe(51.5);
+      expect(loading.value).toBe(false);
+    });
+  });
+
+  // -------------------------------------------------------------
   // getWeather()
   // -------------------------------------------------------------
   describe("getWeather()", () => {
@@ -166,14 +285,14 @@ describe("useWeather composable", () => {
         error,
         forecast,
         locationName,
-        countryName
+        countryName,
       } = useWeather();
 
       // 1. geocode mock
       const geoData = {
         results: [
-          { latitude: 50, longitude: 5, name: "Testville", country: "TS" }
-        ]
+          { latitude: 50, longitude: 5, name: "Testville", country: "TS" },
+        ],
       };
 
       // 2. weather mock
@@ -185,25 +304,26 @@ describe("useWeather composable", () => {
           relative_humidity_2m: [50],
           precipitation: [0],
           wind_speed_10m: [5],
-          cloud_cover: [10]
+          cloud_cover: [10],
         },
         daily: {
           time: ["2025-01-01"],
           temperature_2m_max: [12],
           temperature_2m_min: [5],
           precipitation_sum: [0],
-          wind_speed_10m_max: [10]
-        }
+          wind_speed_10m_max: [10],
+        },
       };
 
-      const mock = vi.fn()
+      const mock = vi
+        .fn()
         // First call → geocode
         .mockResolvedValueOnce({
-          json: () => Promise.resolve(geoData)
+          json: () => Promise.resolve(geoData),
         })
         // Second call → weather
         .mockResolvedValueOnce({
-          json: () => Promise.resolve(weatherData)
+          json: () => Promise.resolve(weatherData),
         });
 
       vi.stubGlobal("fetch", mock);
